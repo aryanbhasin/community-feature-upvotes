@@ -1,36 +1,86 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Network School - Community Feature Requests
+
+A dead simple upvote app for the Network School community in Forest City, Malaysia. Submit and vote on feature requests to help prioritize what the core team should work on next.
+
+## What It Does
+
+- 🗳️ **Submit Requests** - Anyone can propose improvements (e.g., "EVOO for lunch", "more power outlets in NS Cafe")
+- ⬆️ **Upvote** - Click to upvote requests you care about (no login required)
+- ⏰ **Time Decay** - Old requests naturally sink as they age, keeping fresh ideas at the top
+- 🚫 **Spam Prevention** - Cookie-based tracking prevents duplicate votes
+
+## Features
+
+- **No Database** - All data stored in-memory (resets on server restart)
+- **No Login Required** - Instant access for first-time visitors
+- **Time-Decay Algorithm** - Score = upvotes / age_in_weeks
+- **Clean UI** - Black and white theme using Shadcn components
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+# Install dependencies
+npm install
+
+# Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to see the app.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## How It Works
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### User Flows
 
-## Learn More
+1. **Landing Page** - See all requests sorted by decay score
+2. **Upvote** - Click arrow button → increments immediately (one vote per person per request)
+3. **Submit** - Click "Submit Request" → fill form (title, optional description, optional name) → appears at bottom with 0 upvotes
 
-To learn more about Next.js, take a look at the following resources:
+### API Routes
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `GET /api/requests` - Fetch all requests sorted by decay score
+- `POST /api/requests` - Create new feature request
+- `POST /api/requests/[id]/upvote` - Upvote a request (with spam prevention)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Time Decay Formula
 
-## Deploy on Vercel
+```
+score = upvotes × (1 / age_in_weeks)
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+This ensures that:
+- New upvoted requests rise to the top
+- Old requests gradually sink even with many upvotes
+- The list stays fresh and relevant
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Tech Stack
+
+- **Next.js 15** - React framework with App Router
+- **TypeScript** - Type safety
+- **Shadcn/UI** - UI components
+- **Tailwind CSS** - Styling
+- **In-Memory Storage** - No database needed
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── api/requests/        # API routes for CRUD operations
+│   └── page.tsx             # Main homepage with request list
+├── components/
+│   ├── ui/                  # Shadcn UI components
+│   └── SubmitRequestDialog.tsx  # Request submission form
+└── lib/                     # Utilities
+```
+
+## Development Notes
+
+- Auto-refreshes every 10 seconds to update decay scores
+- Cookie-based spam prevention (stores upvoted request IDs)
+- Responsive design for mobile and desktop
+- No authentication or admin features (keeping it simple!)
+
+---
+
+Built for the Network School community 🏨🌴
